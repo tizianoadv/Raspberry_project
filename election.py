@@ -19,15 +19,17 @@ Delta = 5
 
 # Socket
 HOST = '127.0.0.1'
-PORT = 65432 + MyID
+PORT = 8000 + MyID
 sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
 sock.bind((HOST, PORT))
 
 # Fonction pour envoyer un message en broadcast
 def send_broadcast(msg):
-    for i in range(1, 3):  # Envoie à tous les noeuds (ici, 2)
+    for i in range(1, 2):  # Envoie à tous les noeuds (ici, 2)
         if i != MyID:
-            sock.sendto(msg.encode('utf-8'), (HOST, PORT + i))
+            sock.sendto(msg.encode('utf-8'), (HOST, PORT - MyID + i))
+            print(f"[EMITTER-{MyID}] Send to: {HOST}|{PORT - MyID +i}")
 
 # Fonction exécutée par le noeud émetteur
 def emitter():
